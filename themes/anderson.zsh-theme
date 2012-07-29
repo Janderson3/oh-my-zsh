@@ -14,8 +14,8 @@ function theme_precmd {
     local gitsize=${#gitstring}
     if [ "$gitsize" -eq "0" ] 
       then gitsize=0
-      #subtract off a constant for the color codes
-      else ((gitsize=$gitsize - 18))
+      #subtract off a constant for the color codes and status symbol
+      else ((gitsize=$gitsize - 16))
     fi
     local pwdsize=${#${(%):-%~}}
 
@@ -52,8 +52,8 @@ setprompt () {
 	colors
     fi
     for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE GREY; do
-	eval PR_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
-	eval PR_LIGHT_$color='%{$fg[${(L)color}]%}'
+	eval PR_$color='%{$fg_no_bold[${(L)color}]%}'
+	eval PR_LIGHT_$color='%{$fg_bold[${(L)color}]%}'
 	(( count = $count + 1 ))
     done
     PR_NO_COLOUR="%{$terminfo[sgr0]%}"
@@ -117,7 +117,7 @@ setprompt () {
 
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
 $PR_CYAN$PR_SHIFT_IN$PR_ULCORNER$PR_HBAR$PR_SHIFT_OUT$PR_GREY(\
-$PR_GREEN%$PR_PWDLEN<...<%~%<<$PR_LIGHT_BLUE%{$reset_color%}`git_prompt_info`\
+$PR_GREEN%$PR_PWDLEN<...<%~%<<$PR_LIGHT_BLUE%{$reset_color%}`git_prompt_info``git_prompt_status`\
 $PR_GREY)$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_SHIFT_OUT$PR_GREY(\
 $PR_CYAN%(!.%SROOT%s.%n)$PR_GREY@$PR_GREEN%m:%l\
 $PR_GREY)$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT\
