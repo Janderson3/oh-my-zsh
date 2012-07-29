@@ -64,6 +64,11 @@ setprompt () {
     done
     PR_NO_COLOUR="%{$terminfo[sgr0]%}"
 
+    CHRGE_STRING=`battery_pct_prompt`
+    if [ -z CHRGE_STRING ]
+    then
+        CHRGE_STRING="%{$fg[green]%}CHRGE"
+    fi
     ###
     # Modify Git prompt
     ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg[green]%}"
@@ -123,13 +128,14 @@ setprompt () {
 
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
 $PR_CYAN$PR_SHIFT_IN$PR_ULCORNER$PR_HBAR$PR_SHIFT_OUT$PR_CYAN(\
-$PR_GREEN%$PR_PWDLEN<...<%~%<<$PR_LIGHT_CYAN%{$reset_color%}`git_prompt_info``git_prompt_status`\
-$PR_CYAN)$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_SHIFT_OUT$PR_CYAN(\
-$PR_CYAN%(!.%SROOT%s.%n)$PR_CYAN@$PR_GREEN%m:%l\
+$PR_BLUE%$PR_PWDLEN<...<%~%<<$PR_LIGHT_CYAN%{$reset_color%}\
+`git_prompt_info``git_prompt_status`$PR_CYAN)$PR_CYAN$PR_SHIFT_IN\
+$PR_HBAR$PR_HBAR${(e)PR_FILLBAR}$PR_HBAR$PR_SHIFT_OUT$PR_CYAN(\
+$PR_MAGENTA%(!.%SROOT%s.%n)$PR_CYAN@$PR_GREEN%m:%l\
 $PR_CYAN)$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT\
 
 $PR_CYAN$PR_SHIFT_IN$PR_LLCORNER$PR_CYAN$PR_HBAR$PR_SHIFT_OUT(\
-$PR_YELLOW%D{%H:%M:%S}\
+$CHRGE_STRING\
 $PR_CYAN)$PR_CYAN$PR_SHIFT_IN$PR_HBAR\
 $PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 >$PR_NO_COLOUR '
@@ -137,7 +143,7 @@ $PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
     # display exitcode on the right when >0
     return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
     RPROMPT=' $return_code$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_HBAR$PR_SHIFT_OUT\
-($PR_YELLOW%D{%a,%b%d}$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOUR'
+($PR_YELLOW%D{%H:%M:%S %a,%b %d}$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOUR'
 
     PS2='$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 $PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT(\
