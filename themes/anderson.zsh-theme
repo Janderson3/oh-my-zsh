@@ -11,11 +11,17 @@ function theme_precmd {
 
     local promptsize=${#${(%):---(%n@%m:%l)---()--}}
     local gitstring="`git_prompt_info`"
-    local gitsize=${#gitstring}
-    if [ "$gitsize" -eq "0" ] 
+    local gitbuff=${#gitstring}
+    local symbolString="`git_prompt_status`"
+    local symbolSize=${#symbolString}
+    if [ "$gitbuff" -eq "0" ] 
       then gitsize=0
       #subtract off a constant for the color codes and status symbol
-      else ((gitsize=$gitsize - 16))
+      else 
+      if [ "$symbolSize" -eq "0" ]
+          then ((gitsize=$gitbuff - 18))
+          else ((gitsize=$gitbuff - 16))
+      fi
     fi
     local pwdsize=${#${(%):-%~}}
 
