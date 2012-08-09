@@ -18,10 +18,12 @@ function theme_precmd {
       then gitsize=0
       #subtract off a constant for the color codes and status symbol
       else 
-      if [ "$symbolSize" -eq "0" ]
-          then ((gitsize=$gitbuff - 18))
-          else ((gitsize=$gitbuff - 16))
-      fi
+        ##The color codes are currently 9 chars long each symbol consists
+        #of a space a symbol and a color code so to find the number of
+        #symbols divide by 11. Then to get the symbol and space back
+        #multiply by two.
+        ((symbolSize=($symbolSize * 2) / 11))
+        ((gitsize=$gitbuff - (18 - $symbolSize)))
     fi
     local pwdsize=${#${(%):-%~}}
 
@@ -29,6 +31,12 @@ function theme_precmd {
       ((PR_PWDLEN=$TERMWIDTH - $promptsize))
     else
       PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $gitsize + $pwdsize)))..${PR_HBAR}.)}"
+    fi
+
+    CHRGE_STRING=`battery_pct_prompt`
+    if [ -z CHRGE_STRING ]
+    then
+        CHRGE_STRING="%{$fg[green]%}CHRGE"
     fi
 
 }
@@ -64,11 +72,6 @@ setprompt () {
     done
     PR_NO_COLOUR="%{$terminfo[sgr0]%}"
 
-    CHRGE_STRING=`battery_pct_prompt`
-    if [ -z CHRGE_STRING ]
-    then
-        CHRGE_STRING="%{$fg[green]%}CHRGE"
-    fi
     ###
     # Modify Git prompt
     ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg[green]%}"
