@@ -14,6 +14,13 @@ function theme_precmd {
     local gitbuff=${#gitstring}
     local symbolString="`git_prompt_status`"
     local symbolSize=${#symbolString}
+
+    CHRGE_STRING=`battery_pct_prompt`
+    if [ -z CHRGE_STRING ]
+    then
+        CHRGE_STRING="%{$fg[green]%}CHRGE"
+    fi
+
     if [ "$gitbuff" -eq "0" ] 
       then gitsize=0
       #subtract off a constant for the color codes and status symbol
@@ -64,11 +71,6 @@ setprompt () {
     done
     PR_NO_COLOUR="%{$terminfo[sgr0]%}"
 
-    CHRGE_STRING=`battery_pct_prompt`
-    if [ -z CHRGE_STRING ]
-    then
-        CHRGE_STRING="%{$fg[green]%}CHRGE"
-    fi
     ###
     # Modify Git prompt
     ZSH_THEME_GIT_PROMPT_PREFIX=" on %{$fg[green]%}"
