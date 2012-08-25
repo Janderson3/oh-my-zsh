@@ -14,6 +14,9 @@ function theme_precmd {
     local gitbuff=${#gitstring}
     local symbolString="`git_prompt_status`"
     local symbolSize=${#symbolString}
+
+    CHARGE_STRING="`battery_pct_prompt`"
+
     if [ "$gitbuff" -eq "0" ] 
       then gitsize=0
       #subtract off a constant for the color codes and status symbol
@@ -138,16 +141,23 @@ $PR_MAGENTA%(!.%SROOT%s.%n)$PR_CYAN@$PR_GREEN%m:%l\
 $PR_CYAN)$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_URCORNER$PR_SHIFT_OUT\
 
 $PR_CYAN$PR_SHIFT_IN$PR_LLCORNER$PR_CYAN$PR_HBAR$PR_SHIFT_OUT(\
-$CHRGE_STRING\
+$PR_YELLOW%D{%H:%M:%S}\
 $PR_CYAN)$PR_CYAN$PR_SHIFT_IN$PR_HBAR\
 $PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 >$PR_NO_COLOUR '
 
     # display exitcode on the right when >0
     return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
-    RPROMPT=' $return_code$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_HBAR$PR_SHIFT_OUT\
-($PR_YELLOW%D{%H:%M:%S %a,%b %d}$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOUR'
 
+    CHARGE_STRING="`battery_pct_prompt`"
+    local chargeLen=${#CHARGE_STRING}
+
+    if [ "$chargeLen" -eq "0" ]
+        then RPROMPT=' $return_code$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_HBAR$PR_SHIFT_OUT\
+($PR_YELLOW%D{%a,%b %d}$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOUR'
+        else RPROMPT=' $return_code$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_HBAR$PR_SHIFT_OUT\
+($CHARGE_STRING$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_SHIFT_OUT$PR_NO_COLOUR'
+    fi
     PS2='$PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 $PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT(\
 $PR_LIGHT_GREEN%_$PR_CYAN)$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
